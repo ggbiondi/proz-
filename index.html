@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proz - Controle de Visitas</title>
+    <style>
+        /* Estilos globais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Estilo do formulário */
+        form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        form input, form select, form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #45a049;
+        }
+
+        /* Tabela */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+
+        .action-buttons .delete {
+            background-color: #f44336;
+        }
+
+        .action-buttons .delete:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Proz - Controle de Visitas</h1>
+
+        <!-- Formulário de cadastro -->
+        <h2>Registrar Visita</h2>
+        <form id="visitorForm">
+            <input type="text" id="visitorName" placeholder="Nome do Visitante" required>
+            <input type="text" id="visitorContact" placeholder="Contato (telefone/email)" required>
+            <input type="text" id="visitReason" placeholder="Motivo da Visita" required>
+            <button type="submit">Registrar Visita</button>
+        </form>
+
+        <!-- Tabela de visitas -->
+        <h2>Histórico de Visitas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Contato</th>
+                    <th>Motivo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="visitorTableBody">
+                <!-- Dados dinâmicos -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Array para armazenar visitantes
+        let visitors = [];
+
+        // Referências aos elementos
+        const visitorForm = document.getElementById("visitorForm");
+        const visitorTableBody = document.getElementById("visitorTableBody");
+
+        // Função para renderizar a tabela
+        function renderTable() {
+            visitorTableBody.innerHTML = "";
+            visitors.forEach((visitor, index) => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${visitor.name}</td>
+                    <td>${visitor.contact}</td>
+                    <td>${visitor.reason}</td>
+                    <td class="action-buttons">
+                        <button onclick="editVisitor(${index})">Editar</button>
+                        <button class="delete" onclick="deleteVisitor(${index})">Excluir</button>
+                    </td>
+                `;
+
+                visitorTableBody.appendChild(row);
+            });
+        }
+
+        // Função para registrar visitante
+        visitorForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById("visitorName").value;
+            const contact = document.getElementById("visitorContact").value;
+            const reason = document.getElementById("visitReason").value;
+
+            visitors.push({ name, contact, reason });
+
+            visitorForm.reset();
+            renderTable();
+        });
+
+        // Função para editar visitante
+        function editVisitor(index) {
+            const visitor = visitors[index];
+
+            document.getElementById("visitorName").value = visitor.name;
+            document.getElementById("visitorContact").value = visitor.contact;
+            document.getElementById("visitReason").value = visitor.reason;
+
+            visitors.splice(index, 1); // Remove o visitante da lista
+            renderTable(); // Atualiza a tabela
+        }
+
+        // Função para excluir visitante
+        function deleteVisitor(index) {
+            visitors.splice(index, 1);
+            renderTable();
+        }
+    </script>
+</body>
+</html>
